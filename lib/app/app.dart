@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme.dart';
 import '../features/auth/providers/auth_provider.dart';
 import '../features/auth/presentation/pages/login_page.dart';
+import '../features/songs/presentation/pages/home_page.dart';
+import '../features/songs/presentation/pages/my_songs_page.dart';
 
 class EchionApp extends ConsumerStatefulWidget {
   const EchionApp({super.key});
@@ -15,7 +17,6 @@ class _EchionAppState extends ConsumerState<EchionApp> {
   @override
   void initState() {
     super.initState();
-    // Cek status auth
     Future.microtask(() => ref.read(authProvider.notifier).checkAuthStatus());
   }
 
@@ -28,7 +29,46 @@ class _EchionAppState extends ConsumerState<EchionApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      home: LoginPage(),
+      home: authState.isLoggedIn ? const MainScreen() : const LoginPage(),
+    );
+  }
+}
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [HomePage(), MySongsPage()],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) {
+          setState(() => _currentIndex = index);
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.library_music_outlined),
+            selectedIcon: Icon(Icons.library_music),
+            label: 'My Songs',
+          ),
+        ],
+      ),
     );
   }
 }
