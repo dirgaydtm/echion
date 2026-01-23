@@ -143,7 +143,7 @@ class SongsNotifier extends Notifier<SongsState> {
     }
   }
 
-  Future<void> clearCache() async {
+  Future<void> clearData() async {
     await _box.delete('all_songs');
     await _box.delete('my_songs');
     state = const SongsState();
