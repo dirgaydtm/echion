@@ -5,6 +5,8 @@ import '../features/auth/providers/auth_provider.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/songs/presentation/pages/home_page.dart';
 import '../features/songs/presentation/pages/my_songs_page.dart';
+import '../features/settings/providers/settings_provider.dart';
+import '../features/settings/presentation/pages/settings_page.dart';
 
 class EchionApp extends ConsumerStatefulWidget {
   const EchionApp({super.key});
@@ -22,6 +24,7 @@ class _EchionAppState extends ConsumerState<EchionApp> {
 
   @override
   Widget build(BuildContext context) {
+    final settingsState = ref.watch(settingsProvider);
     final authState = ref.watch(authProvider);
 
     return MaterialApp(
@@ -29,6 +32,7 @@ class _EchionAppState extends ConsumerState<EchionApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
+      themeMode: settingsState.themeMode,
       home: authState.isLoggedIn ? const MainScreen() : const LoginPage(),
     );
   }
@@ -49,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: const [HomePage(), MySongsPage()],
+        children: const [HomePage(), MySongsPage(), SettingsPage()],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
@@ -66,6 +70,11 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.library_music_outlined),
             selectedIcon: Icon(Icons.library_music),
             label: 'My Songs',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
