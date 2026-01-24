@@ -1,16 +1,16 @@
+import 'package:echion/core/utils/snackbar_helper.dart';
+import 'package:echion/core/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/loading_button.dart';
-import 'package:page_transition/page_transition.dart';
 import '../widgets/password_field.dart';
 import '../../providers/auth_provider.dart';
-import 'login_page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
-  const SignupPage({super.key});
+  const SignupPage({super.key, required this.onToggleAuth});
+  final VoidCallback onToggleAuth;
 
   @override
   ConsumerState<SignupPage> createState() => _SignupPageState();
@@ -62,22 +62,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
-                    Icons.headphones_rounded,
-                    size: 80,
-                    color: colorScheme.primary,
-                  ),
+                  Logo(size: 100),
+
                   const SizedBox(height: 16),
                   Text(
-                    'Echion',
+                    'ECHION',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                       color: colorScheme.primary,
                     ),
                   ),
-
-                  const SizedBox(height: 8),
 
                   Text(
                     'Start listening without limits',
@@ -87,7 +82,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 40),
 
                   AppTextField(
                     controller: _nameController,
@@ -116,14 +111,14 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     onPressed: _signup,
                     label: 'Sign Up',
                   ),
-                  
+
                   const SizedBox(height: 16),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already have an account? ',
+                        'Already have an account?',
                         style: TextStyle(color: colorScheme.onSurfaceVariant),
                       ),
                       TextButton(
@@ -131,13 +126,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
                         ),
-                        onPressed: () => Navigator.pushReplacement(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const LoginPage(),
-                          ),
-                        ),
+                        onPressed: () {
+                          widget.onToggleAuth();
+                        },
                         child: const Text('Login'),
                       ),
                     ],

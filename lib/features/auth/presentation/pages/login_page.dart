@@ -1,16 +1,16 @@
+import '../../../../core/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/loading_button.dart';
-import 'package:page_transition/page_transition.dart';
 import '../widgets/password_field.dart';
 import '../../providers/auth_provider.dart';
-import 'signup_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.onToggleAuth});
+  final VoidCallback onToggleAuth;
 
   @override
   ConsumerState<LoginPage> createState() => _LoginPageState();
@@ -60,21 +60,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(
-                    Icons.headphones_rounded,
-                    size: 80,
-                    color: colorScheme.primary,
-                  ),
+                  const Logo(size: 100),
+
                   const SizedBox(height: 16),
                   Text(
-                    'Echion',
+                    'ECHION',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
                       color: colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 8),
+
                   Text(
                     'Your Music, Your Way',
                     textAlign: TextAlign.center,
@@ -83,7 +80,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 40),
 
                   AppTextField(
                     controller: _emailController,
@@ -96,6 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 16),
 
                   PasswordField(controller: _passwordController),
+
                   const SizedBox(height: 24),
 
                   LoadingButton(
@@ -103,6 +101,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     onPressed: _login,
                     label: 'Login',
                   ),
+
                   const SizedBox(height: 16),
 
                   Row(
@@ -117,13 +116,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
                         ),
-                        onPressed: () => Navigator.pushReplacement(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const SignupPage(),
-                          ),
-                        ),
+                        onPressed: () {
+                          widget.onToggleAuth();
+                        },
                         child: const Text('Sign Up'),
                       ),
                     ],
