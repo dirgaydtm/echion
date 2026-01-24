@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme.dart';
 import '../features/auth/providers/auth_provider.dart';
 import '../features/auth/presentation/pages/login_page.dart';
+import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/songs/presentation/pages/home_page.dart';
 import '../features/songs/presentation/pages/my_songs_page.dart';
 import '../features/settings/providers/settings_provider.dart';
@@ -33,8 +34,30 @@ class _EchionAppState extends ConsumerState<EchionApp> {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: settingsState.themeMode,
-      home: authState.isLoggedIn ? const MainScreen() : const LoginPage(),
+      home: authState.isLoggedIn ? const MainScreen() : const AuthScreen(),
     );
+  }
+}
+
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool _isLogin = true;
+
+  void _toggleAuth() {
+    setState(() => _isLogin = !_isLogin);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLogin 
+        ? LoginPage(onToggleAuth: _toggleAuth)
+        : SignupPage(onToggleAuth: _toggleAuth);
   }
 }
 
