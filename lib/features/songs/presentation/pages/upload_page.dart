@@ -59,7 +59,9 @@ class _UploadPageState extends ConsumerState<UploadPage> {
       return;
     }
 
-    final success = await ref.read(songsProvider.notifier).uploadSong(
+    final success = await ref
+        .read(songsProvider.notifier)
+        .uploadSong(
           filePath: _songPath!,
           thumbnailPath: _thumbnailPath!,
           title: _titleController.text.trim(),
@@ -90,16 +92,27 @@ class _UploadPageState extends ConsumerState<UploadPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              FilePickerTile(label: 'Song File', icon: Icons.music_note, fileName: _songName, onTap: _pickSong),
+              FilePickerTile(
+                label: 'Song File',
+                icon: Icons.music_note,
+                fileName: _songName,
+                onTap: _pickSong,
+              ),
               const SizedBox(height: 16),
-              FilePickerTile(label: 'Thumbnail', icon: Icons.image, fileName: _thumbnailName, onTap: _pickThumbnail),
-              const SizedBox(height: 24),
+              FilePickerTile(
+                label: 'Thumbnail',
+                icon: Icons.image,
+                fileName: _thumbnailName,
+                onTap: _pickThumbnail,
+              ),
+              const SizedBox(height: 16),
 
               AppTextField(
                 controller: _titleController,
                 labelText: 'Title',
                 prefixIcon: Icons.title,
-                validator: (value) => AppValidator.required(value, 'song title'),
+                validator: (value) =>
+                    AppValidator.required(value, 'song title'),
               ),
               const SizedBox(height: 16),
 
@@ -107,11 +120,16 @@ class _UploadPageState extends ConsumerState<UploadPage> {
                 controller: _artistController,
                 labelText: 'Artist',
                 prefixIcon: Icons.person,
-                validator: (value) => AppValidator.required(value, 'artist name'),
+                validator: (value) =>
+                    AppValidator.required(value, 'artist name'),
               ),
               const SizedBox(height: 32),
 
-              LoadingButton(isLoading: songsState.isLoading, onPressed: _upload, label: 'Upload'),
+              LoadingButton(
+                isLoading: songsState.isLoading,
+                onPressed: _upload,
+                label: 'Upload',
+              ),
             ],
           ),
         ),
