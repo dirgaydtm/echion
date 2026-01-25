@@ -55,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLogin 
+    return _isLogin
         ? LoginPage(onToggleAuth: _toggleAuth)
         : SignupPage(onToggleAuth: _toggleAuth);
   }
@@ -78,28 +78,33 @@ class _MainScreenState extends State<MainScreen> {
         index: _currentIndex,
         children: const [HomePage(), MySongsPage(), SettingsPage()],
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.library_music_outlined),
-            selectedIcon: Icon(Icons.library_music),
-            label: 'My Songs',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(splashColor: Colors.transparent),
+        child: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (index) {
+            setState(() => _currentIndex = index);
+          },
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          indicatorColor: Colors.transparent,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined, size: 30),
+              selectedIcon: Icon(Icons.home, size: 30),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.library_music_outlined, size: 30),
+              selectedIcon: Icon(Icons.library_music, size: 30),
+              label: 'My Songs',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings_outlined, size: 30),
+              selectedIcon: Icon(Icons.settings, size: 30),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }
