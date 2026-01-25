@@ -4,9 +4,10 @@ import '../../providers/song_provider.dart';
 import '../../providers/player_provider.dart';
 import '../widgets/song_tile.dart';
 import '../widgets/mini_player.dart';
-import '../widgets/search_bar.dart' as app;
+import '../widgets/custom_search_bar.dart';
 import '../../../../core/widgets/empty_state.dart';
-import 'player_page.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -36,6 +37,14 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<PlayerState>(playerProvider, (previous, next) {
+      if (next.error != null && next.error != previous?.error) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showSnackBar(context, next.error!);
+        });
+      }
+    });
+
     final songsState = ref.watch(songsProvider);
     final playerState = ref.watch(playerProvider);
 
@@ -46,22 +55,29 @@ class _HomePageState extends ConsumerState<HomePage> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Echion'), centerTitle: true),
+      appBar: const CustomAppBar(),
+
       body: Column(
         children: [
-          app.SearchBar(
+          CustomSearchBar(
             controller: _searchController,
             hintText: 'Search songs...',
             onChanged: (v) => setState(() => _searchQuery = v),
           ),
-          Expanded(child: _buildContent(songsState, playerState, filteredSongs)),
+          Expanded(
+            child: _buildContent(songsState, playerState, filteredSongs),
+          ),
           if (playerState.currentSong != null) const MiniPlayer(),
         ],
       ),
     );
   }
 
-  Widget _buildContent(SongsState songsState, PlayerState playerState, List filteredSongs) {
+  Widget _buildContent(
+    SongsState songsState,
+    PlayerState playerState,
+    List filteredSongs,
+  ) {
     if (songsState.isLoading && songsState.allSongs.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -76,7 +92,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return RefreshIndicator(
       onRefresh: () => ref.read(songsProvider.notifier).fetchAllSongs(),
       child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(top: 12, bottom: 80),
         itemCount: filteredSongs.length,
         itemBuilder: (context, index) {
           final song = filteredSongs[index];
@@ -84,8 +100,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             song: song,
             isPlaying: playerState.currentSong?.id == song.id,
             onTap: () {
-              ref.read(playerProvider.notifier).playSong(song, filteredSongs.cast());
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const PlayerPage()));
+              ref
+                  .read(playerProvider.notifier)
+                  .playSong(song, filteredSongs.cast());
             },
           );
         },

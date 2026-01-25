@@ -10,7 +10,6 @@ class MiniPlayer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Use granular selection to avoid rebuilds on position/duration changes
     final song = ref.watch(playerProvider.select((s) => s.currentSong));
     final isPlaying = ref.watch(playerProvider.select((s) => s.isPlaying));
     final isBuffering = ref.watch(playerProvider.select((s) => s.isBuffering));
@@ -28,15 +27,12 @@ class MiniPlayer extends ConsumerWidget {
       closedShape: const RoundedRectangleBorder(),
       openBuilder: (context, _) => const PlayerPage(),
       closedBuilder: (context, openContainer) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: colorScheme.outline),
-          ),
+          border: Border(top: BorderSide(color: colorScheme.outline)),
         ),
         child: Row(
           children: [
-            // Thumbnail with cache
             Container(
               width: 48,
               height: 48,
@@ -48,19 +44,15 @@ class MiniPlayer extends ConsumerWidget {
               child: CachedNetworkImage(
                 imageUrl: song.thumbnailUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Icon(
-                  Icons.music_note,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.music_note,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                placeholder: (context, url) =>
+                    Icon(Icons.music_note, color: colorScheme.onSurfaceVariant),
+                errorWidget: (context, url, error) =>
+                    Icon(Icons.music_note, color: colorScheme.onSurfaceVariant),
               ),
             ),
+
             const SizedBox(width: 12),
 
-            // Song info
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -85,20 +77,47 @@ class MiniPlayer extends ConsumerWidget {
               ),
             ),
 
-            // Buffering indicator or Play/Pause button
-            if (isBuffering)
-              const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            else
-              IconButton(
-                onPressed: () => ref.read(playerProvider.notifier).playPause(),
-                icon: Icon(
-                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.skip_previous),
+                  onPressed: isBuffering
+                      ? null
+                      : () => ref.read(playerProvider.notifier).previous(),
+                  highlightColor: Colors.transparent,
                 ),
-              ),
+                SizedBox(
+                  width: 24,
+                  height: 48,
+                  child: Center(
+                    child: isBuffering
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 3),
+                          )
+                        : IconButton(
+                            highlightColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              isPlaying
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                            ),
+                            onPressed: () =>
+                                ref.read(playerProvider.notifier).playPause(),
+                          ),
+                  ),
+                ),
+                IconButton(
+                  highlightColor: Colors.transparent,
+                  icon: const Icon(Icons.skip_next),
+                  onPressed: isBuffering
+                      ? null
+                      : () => ref.read(playerProvider.notifier).next(),
+                ),
+              ],
+            ),
           ],
         ),
       ),

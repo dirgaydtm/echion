@@ -36,22 +36,15 @@ class SongTile extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: song.thumbnailUrl,
               fit: BoxFit.cover,
-              placeholder: (context, url) => Icon(
-                Icons.music_note,
-                color: colorScheme.onSurfaceVariant,
-              ),
-              errorWidget: (context, url, error) => Icon(
-                Icons.music_note,
-                color: colorScheme.onSurfaceVariant,
-              ),
+              placeholder: (context, url) =>
+                  Icon(Icons.music_note, color: colorScheme.onSurfaceVariant),
+              errorWidget: (context, url, error) =>
+                  Icon(Icons.music_note, color: colorScheme.onSurfaceVariant),
             ),
             if (isPlaying)
               Container(
                 color: Colors.black54,
-                child: const Icon(
-                  Icons.equalizer,
-                  color: Colors.white,
-                ),
+                child: const Icon(Icons.equalizer, color: Colors.white),
               ),
           ],
         ),
@@ -60,8 +53,8 @@ class SongTile extends StatelessWidget {
         song.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontWeight: isPlaying ? FontWeight.bold : FontWeight.normal,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: isPlaying ? FontWeight.w900 : FontWeight.normal,
           color: isPlaying ? colorScheme.primary : null,
         ),
       ),
@@ -69,9 +62,9 @@ class SongTile extends StatelessWidget {
         song.artist,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: colorScheme.onSurfaceVariant,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
       ),
       trailing: trailing,
     );
