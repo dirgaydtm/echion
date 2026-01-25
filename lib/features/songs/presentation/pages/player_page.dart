@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/player_provider.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 
 class PlayerPage extends ConsumerWidget {
   const PlayerPage({super.key});
@@ -18,6 +19,14 @@ class PlayerPage extends ConsumerWidget {
     final song = playerState.currentSong;
     final colorScheme = Theme.of(context).colorScheme;
 
+    ref.listen<PlayerState>(playerProvider, (previous, next) {
+      if (next.error != null && next.error != previous?.error) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showSnackBar(context, next.error!);
+        });
+      }
+    });
+
     if (song == null) {
       return Scaffold(
         appBar: AppBar(),
@@ -30,19 +39,22 @@ class PlayerPage extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_down),
           onPressed: () => Navigator.pop(context),
+          iconSize: 32,
         ),
-        title: const Text('Now Playing'),
+        title: const Text(
+          'Now Playing',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const Spacer(),
-
             Container(
-              width: 280,
-              height: 280,
+              height: 340,
+              width: 340,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
@@ -76,45 +88,53 @@ class PlayerPage extends ConsumerWidget {
 
             Text(
               song.title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
             Text(
               song.artist,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
 
             Column(
               children: [
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
+                    inactiveTrackColor: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
                     trackHeight: 4,
                     thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 6,
+                      enabledThumbRadius: 8,
                     ),
                   ),
                   child: Slider(
-                    value: playerState.position.inMilliseconds.toDouble(),
-                    max: playerState.duration.inMilliseconds.toDouble().clamp(1, double.infinity),
+                    value: playerState.position.inMilliseconds.toDouble().clamp(
+                      0,
+                      playerState.duration.inMilliseconds.toDouble(),
+                    ),
+                    max: playerState.duration.inMilliseconds.toDouble().clamp(
+                      1,
+                      double.infinity,
+                    ),
                     onChanged: (value) {
-                      ref.read(playerProvider.notifier).seek(
-                            Duration(milliseconds: value.toInt()),
-                          );
+                      ref
+                          .read(playerProvider.notifier)
+                          .seek(Duration(milliseconds: value.toInt()));
                     },
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
