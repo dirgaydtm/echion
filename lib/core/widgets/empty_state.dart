@@ -22,12 +22,21 @@ class EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 64, color: colorScheme.onSurfaceVariant),
-          const SizedBox(height: 16),
-          Text(message, style: TextStyle(color: colorScheme.onSurfaceVariant)),
+          Icon(icon, size: 96, color: colorScheme.onSurfaceVariant),
+          const SizedBox(height: 24),
+          Text(
+            message,
+            style: TextStyle(color: colorScheme.onSurfaceVariant),
+            textAlign: TextAlign.center,
+          ),
           if (actionLabel != null && onAction != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             FilledButton.icon(
+              style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
               onPressed: onAction,
               icon: const Icon(Icons.add),
               label: Text(actionLabel!),

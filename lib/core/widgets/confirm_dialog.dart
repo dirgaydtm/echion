@@ -11,6 +11,7 @@ Future<bool> showConfirmDialog({
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
+      backgroundColor: ColorScheme.dark().surfaceContainer,
       title: Text(title),
       content: Text(message),
       actions: [

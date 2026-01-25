@@ -11,26 +11,33 @@ Future<(String, String)?> showEditSongDialog({
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Edit Song'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(
-              labelText: 'Title',
-              border: OutlineInputBorder(),
+      backgroundColor: ColorScheme.dark().surfaceContainer,
+      title: Text(
+        'Edit Song',
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              expands: false,
+              maxLines: 1,
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: artistController,
-            decoration: const InputDecoration(
-              labelText: 'Artist',
-              border: OutlineInputBorder(),
+            const SizedBox(height: 16),
+            TextField(
+              controller: artistController,
+              expands: false,
+              maxLines: 1,
+              decoration: const InputDecoration(labelText: 'Artist'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(

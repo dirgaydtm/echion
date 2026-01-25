@@ -1,5 +1,7 @@
+import 'package:echion/core/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
 import '../../../../core/utils/snackbar_helper.dart';
 import '../../providers/song_provider.dart';
 import '../../providers/player_provider.dart';
@@ -9,7 +11,6 @@ import '../widgets/mini_player.dart';
 import '../widgets/edit_song_dialog.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
-import 'player_page.dart';
 import 'upload_page.dart';
 
 class MySongsPage extends ConsumerStatefulWidget {
@@ -33,13 +34,16 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
       initialArtist: song.artist,
     );
     if (result != null) {
-      final success = await ref.read(songsProvider.notifier).updateSong(
-            songId: song.id,
-            title: result.$1,
-            artist: result.$2,
-          );
-      if (mounted) {
-        showSnackBar(context, success ? 'Song updated!' : 'Failed to update');
+      final success = await ref
+          .read(songsProvider.notifier)
+          .updateSong(songId: song.id, title: result.$1, artist: result.$2);
+      if (!mounted) return;
+
+      if (success) {
+        showSnackBar(context, 'Song updated successfully');
+      } else {
+        final error = ref.read(songsProvider).error;
+        showSnackBar(context, error ?? 'Failed to update song');
       }
     }
   }
@@ -53,15 +57,32 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
       isDestructive: true,
     );
     if (confirmed) {
-      final success = await ref.read(songsProvider.notifier).deleteSong(song.id);
-      if (mounted) {
-        showSnackBar(context, success ? 'Song deleted!' : 'Failed to delete');
+      final success = await ref
+          .read(songsProvider.notifier)
+          .deleteSong(song.id);
+
+      if (!mounted) return;
+
+      if (success) {
+        showSnackBar(context, 'Song deleted successfully');
+      } else {
+        final error = ref.read(songsProvider).error;
+        showSnackBar(context, error ?? 'Failed to delete song');
       }
     }
   }
 
   void _goToUpload() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const UploadPage()));
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.bottomToTop,
+        duration: const Duration(milliseconds: 400),
+        reverseDuration: const Duration(milliseconds: 200),
+        isIos: true,
+        child: const UploadPage(),
+      ),
+    );
   }
 
   @override
@@ -69,8 +90,16 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
     final songsState = ref.watch(songsProvider);
     final playerState = ref.watch(playerProvider);
 
+    ref.listen<PlayerState>(playerProvider, (previous, next) {
+      if (next.error != null && next.error != previous?.error) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showSnackBar(context, next.error!);
+        });
+      }
+    });
+
     return Scaffold(
-      appBar: AppBar(title: const Text('My Songs'), centerTitle: true),
+      appBar: CustomAppBar(title: 'My Songs'),
       body: Column(
         children: [
           Expanded(child: _buildContent(songsState, playerState)),
@@ -78,7 +107,16 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
         ],
       ),
       floatingActionButton: songsState.mySongs.isNotEmpty
-          ? FloatingActionButton(onPressed: _goToUpload, child: const Icon(Icons.add))
+          ? Padding(
+              padding: EdgeInsets.only(
+                bottom: playerState.currentSong != null ? 64 : 0,
+              ),
+              child: FloatingActionButton(
+                onPressed: _goToUpload,
+                shape: const CircleBorder(),
+                child: const Icon(Icons.add),
+              ),
+            )
           : null,
     );
   }
@@ -90,8 +128,8 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
 
     if (songsState.mySongs.isEmpty) {
       return EmptyState(
-        icon: Icons.library_music_outlined,
-        message: "You haven't uploaded any songs yet",
+        icon: Icons.music_note_outlined,
+        message: "It's a bit quiet here, let's add some tunes",
         actionLabel: 'Upload Song',
         onAction: _goToUpload,
       );
@@ -108,15 +146,35 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
             song: song,
             isPlaying: playerState.currentSong?.id == song.id,
             onTap: () {
-              ref.read(playerProvider.notifier).playSong(song, songsState.mySongs);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const PlayerPage()));
+              ref
+                  .read(playerProvider.notifier)
+                  .playSong(song, songsState.mySongs);
             },
             trailing: PopupMenuButton(
               itemBuilder: (_) => const [
-                PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit), SizedBox(width: 8), Text('Edit')])),
-                PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete), SizedBox(width: 8), Text('Delete')])),
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit),
+                      SizedBox(width: 8),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete),
+                      SizedBox(width: 8),
+                      Text('Delete'),
+                    ],
+                  ),
+                ),
               ],
-              onSelected: (v) => v == 'edit' ? _editSong(song) : _deleteSong(song),
+              onSelected: (v) =>
+                  v == 'edit' ? _editSong(song) : _deleteSong(song),
             ),
           );
         },

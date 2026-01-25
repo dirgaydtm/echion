@@ -25,10 +25,7 @@ class SongTile extends StatelessWidget {
       leading: Container(
         width: 56,
         height: 56,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: colorScheme.surfaceContainer,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         clipBehavior: Clip.antiAlias,
         child: Stack(
           fit: StackFit.expand,
