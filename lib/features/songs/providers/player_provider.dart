@@ -11,6 +11,7 @@ class PlayerState {
   final bool isBuffering;
   final Duration position;
   final Duration duration;
+  final String? error;
 
   const PlayerState({
     this.currentSong,
@@ -20,6 +21,7 @@ class PlayerState {
     this.isBuffering = false,
     this.position = Duration.zero,
     this.duration = Duration.zero,
+    this.error,
   });
 
   PlayerState copyWith({
@@ -30,6 +32,7 @@ class PlayerState {
     bool? isBuffering,
     Duration? position,
     Duration? duration,
+    String? error,
   }) {
     return PlayerState(
       currentSong: currentSong ?? this.currentSong,
@@ -39,6 +42,7 @@ class PlayerState {
       isBuffering: isBuffering ?? this.isBuffering,
       position: position ?? this.position,
       duration: duration ?? this.duration,
+      error: error,
     );
   }
 
@@ -93,14 +97,21 @@ class PlayerNotifier extends Notifier<PlayerState> {
   }
 
   Future<void> _loadAndPlay(SongModel song) async {
-    if (await CacheService.isDownloaded(song.id)) {
-      final localPath = await CacheService.getLocalPath(song.id);
-      await _player.setFilePath(localPath);
-    } else {
-      await _player.setUrl(song.songUrl);
-      CacheService.downloadSong(songId: song.id, url: song.songUrl);
+    try {
+      if (await CacheService.isDownloaded(song.id)) {
+        final localPath = await CacheService.getLocalPath(song.id);
+        await _player.setFilePath(localPath);
+      } else {
+        await _player.setUrl(song.songUrl);
+        CacheService.downloadSong(songId: song.id, url: song.songUrl);
+      }
+      await _player.play();
+    } catch (e) {
+      if (state.hasNext) {
+        await next();
+      }
+      state = state.copyWith(error: "Failed to load song");
     }
-    await _player.play();
   }
 
   Future<void> playSong(SongModel song, List<SongModel> playlist) async {
@@ -110,6 +121,7 @@ class PlayerNotifier extends Notifier<PlayerState> {
       playlist: playlist,
       currentIndex: index >= 0 ? index : 0,
       isBuffering: true,
+      error: null,
     );
     await _loadAndPlay(song);
   }
@@ -122,6 +134,7 @@ class PlayerNotifier extends Notifier<PlayerState> {
         currentSong: nextSong,
         currentIndex: nextIndex,
         isBuffering: true,
+        error: null,
       );
       await _loadAndPlay(nextSong);
     }
@@ -135,6 +148,7 @@ class PlayerNotifier extends Notifier<PlayerState> {
         currentSong: prevSong,
         currentIndex: prevIndex,
         isBuffering: true,
+        error: null,
       );
       await _loadAndPlay(prevSong);
     }
