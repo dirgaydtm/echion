@@ -10,7 +10,7 @@ class SettingsState {
   final bool isClearingCache;
 
   const SettingsState({
-    this.themeMode = ThemeMode.system,
+    required this.themeMode,
     this.cacheSize = '0 B',
     this.isClearingCache = false,
   });
