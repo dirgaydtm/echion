@@ -2,7 +2,7 @@ name: echion
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -42,6 +42,8 @@ dependencies:
   page_transition: ^2.1.0
   animations: ^2.0.11
   flutter_svg: ^2.2.3
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: "^0.14.4"
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +55,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -89,3 +90,18 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  min_sdk_android: 16
+  image_path: "assets/echion-app.png"
+
+flutter_native_splash:
+  color: "#000000"
+  image: assets/echion-splash.png
+  android_12:
+    image: assets/echion-splash.png
+    icon_background_color: "#000000"
+
+  web: false
