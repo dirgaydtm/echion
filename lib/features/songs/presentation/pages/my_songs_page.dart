@@ -9,6 +9,7 @@ import '../../data/song_model.dart';
 import '../widgets/song_tile.dart';
 import '../widgets/mini_player.dart';
 import '../widgets/edit_song_dialog.dart';
+import '../widgets/song_options_menu.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
 import 'upload_page.dart';
@@ -150,31 +151,9 @@ class _MySongsPageState extends ConsumerState<MySongsPage> {
                   .read(playerProvider.notifier)
                   .playSong(song, songsState.mySongs);
             },
-            trailing: PopupMenuButton(
-              itemBuilder: (_) => const [
-                PopupMenuItem(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit),
-                      SizedBox(width: 8),
-                      Text('Edit'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete),
-                      SizedBox(width: 8),
-                      Text('Delete'),
-                    ],
-                  ),
-                ),
-              ],
-              onSelected: (v) =>
-                  v == 'edit' ? _editSong(song) : _deleteSong(song),
+            trailing: SongOptionsMenu(
+              onEdit: () => _editSong(song),
+              onDelete: () => _deleteSong(song),
             ),
           );
         },
