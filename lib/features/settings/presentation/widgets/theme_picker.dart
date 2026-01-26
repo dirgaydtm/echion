@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Theme mode picker widget
 class ThemePicker extends StatelessWidget {
   final ThemeMode selected;
   final ValueChanged<ThemeMode> onChanged;
@@ -14,8 +13,13 @@ class ThemePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(12),
       child: SegmentedButton<ThemeMode>(
+        style: SegmentedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
         segments: const [
           ButtonSegment(
             value: ThemeMode.light,

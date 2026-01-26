@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Storage/cache tile widget with clear button
 class StorageTile extends StatelessWidget {
   final String cacheSize;
   final bool isClearing;
@@ -15,17 +14,15 @@ class StorageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return ListTile(
+      tileColor: colorScheme.surfaceContainer,
       leading: const Icon(Icons.storage),
       title: const Text('Offline Storage'),
       subtitle: Text('Audio cache: $cacheSize'),
       trailing: isClearing
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : TextButton(onPressed: onClear, child: const Text('Clear')),
+          ? const SizedBox(width: 24, height: 24)
+          : IconButton(onPressed: onClear, icon: const Icon(Icons.delete)),
     );
   }
 }

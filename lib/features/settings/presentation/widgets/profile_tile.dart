@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../auth/data/user_model.dart';
 
-/// User profile tile widget
 class ProfileTile extends StatelessWidget {
   final UserModel user;
 
@@ -14,12 +13,16 @@ class ProfileTile extends StatelessWidget {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: colorScheme.primary,
+        radius: 28,
         child: Text(
           user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
           style: TextStyle(color: colorScheme.onPrimary),
         ),
       ),
-      title: Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(
+        user.name,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
       subtitle: Text(user.email),
     );
   }

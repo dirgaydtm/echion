@@ -8,8 +8,10 @@ import '../../providers/settings_provider.dart';
 import '../widgets/profile_tile.dart';
 import '../widgets/theme_picker.dart';
 import '../widgets/storage_tile.dart';
+import '../widgets/logout_tile.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../core/widgets/confirm_dialog.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -20,32 +22,31 @@ class SettingsPage extends ConsumerWidget {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
+      appBar: CustomAppBar(title: 'Settings'),
       body: ListView(
         children: [
           if (authState.user != null) ...[
             const SizedBox(height: 16),
             ProfileTile(user: authState.user!),
-            const Divider(height: 32),
           ],
+          const SizedBox(height: 24),
           const SectionHeader('Appearance'),
-          const SizedBox(height: 16),
           ThemePicker(
             selected: settingsState.themeMode,
-            onChanged: (m) => ref.read(settingsProvider.notifier).setThemeMode(m),
+            onChanged: (m) =>
+                ref.read(settingsProvider.notifier).setThemeMode(m),
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 32),
+          const SizedBox(height: 24),
           const SectionHeader('Storage'),
-          const SizedBox(height: 8),
           StorageTile(
             cacheSize: settingsState.cacheSize,
             isClearing: settingsState.isClearingCache,
             onClear: () => _clearCache(context, ref),
           ),
+
+          const SizedBox(height: 24),
           const SectionHeader('Account'),
-          const SizedBox(height: 8),
-          _LogoutTile(onLogout: () => _logout(context, ref)),
+          LogoutTile(onLogout: () => _logout(context, ref)),
         ],
       ),
     );
@@ -79,21 +80,5 @@ class SettingsPage extends ConsumerWidget {
       await ref.read(settingsProvider.notifier).clearCache();
       await ref.read(authProvider.notifier).logout();
     }
-  }
-}
-
-class _LogoutTile extends StatelessWidget {
-  final VoidCallback onLogout;
-
-  const _LogoutTile({required this.onLogout});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: Icon(Icons.logout, color: colorScheme.error),
-      title: Text('Logout', style: TextStyle(color: colorScheme.error)),
-      onTap: onLogout,
-    );
   }
 }
