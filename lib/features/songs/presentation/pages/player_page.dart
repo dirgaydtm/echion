@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/player_provider.dart';
-import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/snackbar_helper.dart';
 import '../widgets/album.dart';
 import '../widgets/progress_slider.dart';
 import '../widgets/player_control.dart';

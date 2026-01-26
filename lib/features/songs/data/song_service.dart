@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../../core/dio_client.dart';
+import '../../../core/dio/dio_client.dart';
 import 'song_model.dart';
 
 class SongService {

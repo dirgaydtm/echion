@@ -2,7 +2,7 @@ import 'package:echion/core/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/snackbar_helper.dart';
 import '../../providers/song_provider.dart';
 import '../../providers/player_provider.dart';
 import '../../data/song_model.dart';

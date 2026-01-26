@@ -1,8 +1,7 @@
-import '../../../core/dio_client.dart';
+import '../../../core/dio/dio_client.dart';
 import 'user_model.dart';
 
 class AuthService {
-  /// Signup
   static Future<void> signup({
     required String name,
     required String email,
@@ -14,7 +13,6 @@ class AuthService {
     );
   }
 
-  /// Login
   static Future<(String token, UserModel user)> login({
     required String email,
     required String password,
@@ -28,7 +26,6 @@ class AuthService {
     return (token, user);
   }
 
-  /// Ambil user skrg
   static Future<UserModel> getCurrentUser() async {
     final response = await DioClient.get('/auth/', auth: true);
     return UserModel.fromJson(response.data);

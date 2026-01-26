@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../../core/constants.dart';
+import '../../../core/constants/constants.dart';
 import '../data/auth_service.dart';
 import '../data/user_model.dart';
 
@@ -30,17 +30,13 @@ class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() => const AuthState();
 
-  /// Cek status auth
   Future<void> checkAuthStatus() async {
     final token = _box.get(tokenKey);
     final userJson = _box.get(userKey);
 
-    // Ambil data user dari hive dulu (offline)
     if (token != null && userJson != null) {
       final cachedUser = UserModel.fromJson(jsonDecode(userJson));
       state = state.copyWith(user: cachedUser);
-
-      // Cek di user dah logout di server ga
       try {
         final currentUser = await AuthService.getCurrentUser();
         state = state.copyWith(user: currentUser);
@@ -53,7 +49,6 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  /// Signup
   Future<bool> signup({
     required String name,
     required String email,
@@ -70,7 +65,6 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  /// Login
   Future<bool> login({required String email, required String password}) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
@@ -78,7 +72,6 @@ class AuthNotifier extends Notifier<AuthState> {
         email: email,
         password: password,
       );
-      // taruh token dan user ke hive
       await _box.put(tokenKey, token);
       await _box.put(userKey, jsonEncode(user.toJson()));
       state = state.copyWith(user: user, isLoading: false);
@@ -89,16 +82,13 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  /// Logout
   Future<void> logout() async {
-    // Hapus token dan user dari hive
     await _box.delete(tokenKey);
     await _box.delete(userKey);
     state = const AuthState();
   }
 }
 
-/// Instance provider
 final authProvider = NotifierProvider<AuthNotifier, AuthState>(
   AuthNotifier.new,
 );

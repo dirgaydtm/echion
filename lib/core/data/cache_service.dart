@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-import '../dio_client.dart';
+import '../dio/dio_client.dart';
 
 class CacheService {
   static const String _audioCacheDir = 'audio_cache';

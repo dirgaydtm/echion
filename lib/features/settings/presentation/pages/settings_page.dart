@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/snackbar_helper.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../songs/providers/song_provider.dart';
 import '../../../songs/providers/player_provider.dart';

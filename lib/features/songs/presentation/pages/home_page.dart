@@ -7,7 +7,7 @@ import '../widgets/mini_player.dart';
 import '../widgets/custom_search_bar.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/widgets/snackbar_helper.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});

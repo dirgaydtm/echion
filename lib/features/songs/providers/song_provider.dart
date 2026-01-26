@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../../core/constants.dart';
+import '../../../core/constants/constants.dart';
 import '../data/song_model.dart';
 import '../data/song_service.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../../core/constants.dart';
+import '../../../core/constants/constants.dart';
 import '../../../core/data/cache_service.dart';
 
 class SettingsState {

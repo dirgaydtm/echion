@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'constants.dart';
+import '../constants/constants.dart';
 
 class DioClient {
   static final Dio _dio = Dio(
@@ -85,7 +85,7 @@ class DioClient {
   }
 }
 
-/// Global error interceptor
+/// Global error interceptor / error handler
 class _ErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
@@ -106,7 +106,6 @@ class _ErrorInterceptor extends Interceptor {
       message = 'Request cancelled';
     }
 
-    // Auto logout kalo token expired
     if (err.response?.statusCode == 401) {
       final box = Hive.box(authBoxName);
       await box.delete(tokenKey);
@@ -114,7 +113,6 @@ class _ErrorInterceptor extends Interceptor {
       message = 'Session expired. Please login again.';
     }
 
-    // Lempar error
     handler.reject(
       DioException(
         requestOptions: err.requestOptions,

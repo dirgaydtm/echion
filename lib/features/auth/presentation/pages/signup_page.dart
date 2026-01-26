@@ -1,4 +1,4 @@
-import 'package:echion/core/utils/snackbar_helper.dart';
+import 'package:echion/core/widgets/snackbar_helper.dart';
 import 'package:echion/core/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
