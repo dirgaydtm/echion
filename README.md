@@ -2,6 +2,10 @@
 
 <div align="center">
 
+<img src="assets/echion-app.png" alt="Echion App Icon" width="200" />
+
+<br/>
+
 ![Flutter](https://img.shields.io/badge/Flutter-3.32-4CD2FD?style=for-the-badge&logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.10-30B8F6?style=for-the-badge&logo=dart)
 ![Riverpod](https://img.shields.io/badge/Riverpod-3.2.0-2F5AA6?style=for-the-badge)
@@ -11,17 +15,15 @@
 
 </div>
 
----
-
 ## Features
 
-- 🔐 **User Authentication** - Login and signup with secure token-based auth
-- 🎵 **Music Streaming** - Stream songs directly from the API
-- 📤 **Song Upload** - Upload your own songs with thumbnails
-- ✏️ **Song Management** - Edit and delete your uploaded songs
-- 💾 **Offline Caching** - Songs are cached for offline playback
-- 🎨 **Theme Support** - Light, dark, and system theme modes
-- 🔍 **Search** - Search songs by title or artist
+- **User Authentication** - Login and signup with secure token-based auth
+- **Music Streaming** - Stream songs directly from the API
+- **Song Upload** - Upload your own songs with thumbnails
+- **Song Management** - Edit and delete your uploaded songs
+- **Offline Caching** - Songs are cached for offline playback
+- **Theme Support** - Light, dark, and system theme modes
+- **Search** - Search songs by title or artist
 
 ## Tech Stack
 
@@ -35,28 +37,51 @@
 | Audio Player     | just_audio 0.10.5          |
 | Image Caching    | cached_network_image 3.4.1 |
 | File Picker      | file_picker 10.3.8         |
+| App Icon         | flutter_launcher_icons 0.14.0 |
+| Splash Screen    | flutter_native_splash 2.2.11|
+
+## API Endpoints
+
+The app connects to a REST API with the following endpoints:
+
+| Method | Endpoint                  | Description       |
+| ------ | ------------------------- | ----------------- |
+| POST   | `/auth/signup`            | Register new user |
+| POST   | `/auth/login`             | Login user        |
+| GET    | `/auth/`                  | Get current user  |
+| GET    | `/songs/getall`           | Get all songs     |
+| GET    | `/songs/me`               | Get user's songs  |
+| POST   | `/songs/upload`           | Upload new song   |
+| PUT    | `/songs/update/{song_id}` | Update song       |
+| DELETE | `/songs/delete/{song_id}` | Delete song       |
+
+## Architecture
+
+<img src="assets/architecture.png" alt="Architecture Diagram" width="600"/>
 
 ## Project Structure
 
 ```
 lib/
-├── app/                    # App configuration & main screen
-├── core/                   # Shared utilities & widgets
-│   ├── data/              # Cache service
-│   ├── utils/             # Validators, helpers
-│   └── widgets/           # Reusable widgets
+├── app/                   # App configuration, routes, and themes
+├── core/                  # Shared utilities & widgets
+│   ├── data/              
+│   ├── constants/              
+│   ├── dio/               # dio client setup
+│   ├── utils/             
+│   └── widgets/           
 ├── features/              # Feature modules
 │   ├── auth/              # Authentication
-│   │   ├── data/         # AuthService, UserModel
-│   │   ├── presentation/ # Login, Signup pages
-│   │   └── providers/    # AuthProvider
+│   │   ├── data/          
+│   │   ├── presentation/  
+│   │   └── providers/     
 │   ├── songs/             # Songs feature
-│   │   ├── data/         # SongService, SongModel
-│   │   ├── presentation/ # Pages, widgets
-│   │   └── providers/    # SongProvider, PlayerProvider
+│   │   ├── data/          
+│   │   ├── presentation/  
+│   │   └── providers/     
 │   └── settings/          # App settings
-│       ├── presentation/ # Settings page
-│       └── providers/    # SettingsProvider
+│       ├── presentation/  
+│       └── providers/        
 └── main.dart              # App entry point
 ```
 
@@ -78,6 +103,10 @@ cd echion
 # Install dependencies
 flutter pub get
 
+# Generate app icon and splash screen
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+
 # Run the app
 flutter run
 ```
@@ -88,27 +117,7 @@ flutter run
 flutter build apk --release
 ```
 
-## API Endpoints
 
-The app connects to a REST API with the following endpoints:
-
-| Method | Endpoint                  | Description       |
-| ------ | ------------------------- | ----------------- |
-| POST   | `/auth/signup`            | Register new user |
-| POST   | `/auth/login`             | Login user        |
-| GET    | `/auth/`                  | Get current user  |
-| GET    | `/songs/getall`           | Get all songs     |
-| GET    | `/songs/me`               | Get user's songs  |
-| POST   | `/songs/upload`           | Upload new song   |
-| PUT    | `/songs/update/{song_id}` | Update song       |
-| DELETE | `/songs/delete/{song_id}` | Delete song       |
-
-## Architecture
-
-- **Feature-based Architecture** - Each feature is self-contained
-- **Clean Separation** - Data, Presentation, and Provider layers
-- **Riverpod Notifier Pattern** - Modern state management
-- **Offline-First** - Cache data locally, sync with API
 
 ## License
 
